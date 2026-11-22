@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#11121c">
+  <meta name="description" content="Lab Life 实验室人生：一位独立 PI 的三年。像素风实验室经营模拟。">
+  <title>Lab Life · 实验室人生</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%231b1724'/%3E%3Cpath d='M6 3h4v2H9v3l3 5H4l3-5V5H6z' fill='%2357b8a6'/%3E%3Crect x='5' y='11' width='6' height='2' fill='%23f3e7cf'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- ================= TITLE ================= -->
+    <section id="title-screen" class="screen">
+      <canvas id="title-canvas" width="480" height="270"></canvas>
+      <div class="title-vignette"></div>
+      <div class="title-scanlines"></div>
+      <div class="title-content">
+        <div class="title-kicker">RB CITY EXPERIMENTAL CENTER · 3F</div>
+        <h1 class="title-logo"><span class="lab">LAB</span> <span class="life">LIFE</span></h1>
+        <div class="title-cn">实验室人生</div>
+        <p class="title-tag">一位没能通过三年考核的独立 PI，<br>带着三十万启动经费，重新开始。</p>
+        <div class="title-menu">
+          <button class="title-btn primary" id="btn-new">新的旅程 <span class="key">NEW</span></button>
+          <button class="title-btn" id="btn-continue">继续经营 <span class="key">LOAD</span></button>
+          <button class="title-btn" id="btn-title-settings">设置 <span class="key">OPT</span></button>
+          <button class="title-btn" id="btn-credits">制作名单 <span class="key">INFO</span></button>
+        </div>
+      </div>
+      <div class="title-foot">
+        <span class="dot"></span><span>在有限里，做一点无限的事。</span>
+        <span>WEB EDITION 1.5</span>
+      </div>
+      <div class="title-credit">PIXEL LAB SIM · 2026</div>
+    </section>
+
+    <!-- ================= INTRO ================= -->
+    <section id="intro-screen" class="hidden">
+      <div class="intro-wrap">
+        <div class="intro-art">
+          <div class="tape"></div>
+          <canvas id="intro-canvas" width="480" height="360"></canvas>
+        </div>
+        <div class="intro-copy">
+          <div class="intro-chapter" id="intro-chapter">CHAPTER 00 · 失败者</div>
+          <h2 class="intro-title" id="intro-title">三年，一纸未通过</h2>
+          <div class="intro-text" id="intro-text"></div>
+          <div id="intro-extra"></div>
+          <div class="intro-actions">
+            <button class="btn primary" id="intro-next">继续 →</button>
+            <button class="btn" id="intro-skip">跳过序章</button>
+            <span class="intro-hint">SPACE / ENTER</span>
+          </div>
+          <div class="intro-dots" id="intro-dots"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= GAME ================= -->
+    <section id="game-screen" class="hidden">
+      <header id="hud">
+        <div class="hud-brand">
+          <div class="logo">LAB LIFE</div>
+          <div class="sub" id="hud-lab-name">知远实验室</div>
+        </div>
+        <div class="hud-cell hud-date">
+          <div class="hud-label">DATE</div>
+          <div class="hud-value" id="hud-date">Y1 · 4月 第1周</div>
+        </div>
+        <div class="hud-cell hud-money" id="hud-money-cell">
+          <div class="hud-label">FUNDS</div>
+          <div class="hud-value" id="hud-money">¥300,000</div>
+        </div>
+        <div class="hud-cell hud-rep">
+          <div class="hud-label">REPUTATION / RANK</div>
+          <div class="hud-value" id="hud-rep">0 · 未入榜</div>
+        </div>
+        <div class="hud-cell hud-ap">
+          <div class="hud-label">ACTION POINTS</div>
+          <div class="ap-row" id="ap-row"></div>
+          <div class="stress-wrap">
+            <div class="hud-label" style="font-size:6px;color:#8d96a5">STRESS</div>
+            <div class="stress-bar" id="stress-bar"><i style="width:8%"></i></div>
+            <div class="stress-txt" id="stress-txt">8%</div>
+          </div>
+        </div>
+        <div class="hud-tools">
+          <button class="icon-btn" id="btn-backpack" title="背包（B）">🎒</button>
+          <button class="icon-btn" id="btn-save" title="保存游戏">💾</button>
+          <button class="icon-btn" id="btn-sound" title="声音开关">🔊</button>
+          <button class="icon-btn" id="btn-help" title="帮助">?</button>
+          <button class="icon-btn" id="btn-settings" title="设置">⚙</button>
+        </div>
+      </header>
+
+      <div id="game-body">
+        <section id="scene-panel">
+          <canvas id="scene-canvas" width="960" height="580"></canvas>
+          <div class="scene-scanlines"></div>
+          <div class="scene-grain"></div>
+          <div class="scene-topline" id="scene-topline"></div>
+          <div class="scene-hint" id="scene-hint"></div>
+          <div id="fishing-ui" class="fishing-ui hidden"></div>
+          <div class="interact-prompt hidden" id="interact-prompt"><span class="key">E</span><span id="interact-prompt-text">交互</span></div>
+          <div class="scene-float-layer" id="float-layer"></div>
+        </section>
+
+        <aside id="side-panel">
+          <div class="side-block" id="project-card"></div>
+          <div class="side-block" id="action-block">
+            <div class="side-head"><span>本周行动</span><span class="mini" id="week-countdown">距考核 143 周</span></div>
+            <div class="action-grid" id="action-grid"></div>
+            <div class="action-tip" id="action-tip">点击行动开始工作。行动力每周重置。</div>
+            <div id="team-block"></div>
+            <div class="advance-wrap">
+              <button class="advance-btn" id="btn-advance">推进一周 <span class="sub">END WEEK · SPACE</span></button>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <nav id="dock">
+        <button class="dock-btn" data-panel="research"><span class="d-icon" data-icon="flask"></span><span class="d-label">研究</span><span class="d-key">1</span></button>
+        <button class="dock-btn" data-panel="team"><span class="d-icon" data-icon="users"></span><span class="d-label">团队</span><span class="d-key">2</span></button>
+        <button class="dock-btn" data-panel="papers"><span class="d-icon" data-icon="paper"></span><span class="d-label">论文</span><span class="d-key">3</span><span class="badge hidden" id="badge-papers"></span></button>
+        <button class="dock-btn" data-panel="grants"><span class="d-icon" data-icon="coin"></span><span class="d-label">基金</span><span class="d-key">4</span><span class="badge hidden" id="badge-grants"></span></button>
+        <button class="dock-btn" data-panel="equipment"><span class="d-icon" data-icon="wrench"></span><span class="d-label">设备</span><span class="d-key">5</span></button>
+        <button class="dock-btn" data-panel="log"><span class="d-icon" data-icon="book"></span><span class="d-label">日志</span><span class="d-key">6</span></button>
+      </nav>
+
+      <div id="hint-bar">
+        <div class="left" id="hint-left">用 WASD / 方向键走动，靠近仪器或人按 E 交互。</div>
+        <div class="right">WASD MOVE · E INTERACT · SPACE END WEEK · ESC CLOSE</div>
+      </div>
+    </section>
+
+    <!-- ================= LAYERS ================= -->
+    <div id="modal-layer" class="hidden"></div>
+    <div id="toast-layer"></div>
+  </div>
+
+  <script src="js/util.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/sim.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/actor.js"></script>
+  <script src="js/iso.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
